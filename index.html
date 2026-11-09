@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10172a">
+    <title>Makumba Languages</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">M</div>
+            <div>
+                <h2>Makumba</h2>
+                <span>LANGUAGES</span>
+            </div>
+        </div>
+
+        <nav>
+            <a href="#inicio" class="nav-link active">⌂ <span>Inicio</span></a>
+            <a href="#practica" class="nav-link">🎯 <span>Pronunciación</span></a>
+            <a href="#traductor" class="nav-link">🌐 <span>Traductor</span></a>
+            <a href="#makumba" class="nav-link">🤖 <span>Hablar con Makumba</span></a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="mini-character">🤖</div>
+            <p>¡Aprender idiomas nunca fue tan divertido!</p>
+        </div>
+    </aside>
+
+    <main class="main-content" id="inicio">
+        <header class="topbar">
+            <div>
+                <span class="eyebrow">TU AULA DE IDIOMAS</span>
+                <h1>¡Hola! Bienvenido a Makumba</h1>
+                <p>Practica, traduce y mejora tu pronunciación.</p>
+            </div>
+            <div class="online-status">
+                <span class="online-dot"></span> Makumba está en línea
+            </div>
+        </header>
+
+        <section class="stats-grid">
+            <article class="stat-card">
+                <span class="stat-icon">📚</span>
+                <div>
+                    <p>Prácticas realizadas</p>
+                    <h2 id="totalPracticas">0</h2>
+                </div>
+            </article>
+            <article class="stat-card">
+                <span class="stat-icon">🏆</span>
+                <div>
+                    <p>Mejor puntuación</p>
+                    <h2 id="mejorPuntuacion">0%</h2>
+                </div>
+            </article>
+            <article class="stat-card">
+                <span class="stat-icon">⭐</span>
+                <div>
+                    <p>Palabras acertadas</p>
+                    <h2 id="palabrasCorrectas">0</h2>
+                </div>
+            </article>
+        </section>
+
+        <section class="section-heading" id="practica">
+            <div>
+                <span class="eyebrow">APRENDE PRACTICANDO</span>
+                <h2>Entrenador de pronunciación</h2>
+                <p>Escucha la frase y repítela usando tu micrófono.</p>
+            </div>
+        </section>
+
+        <section class="practice-card">
+            <div class="practice-top">
+                <div>
+                    <span class="small-label">IDIOMA DE PRÁCTICA</span>
+                    <select id="idioma">
+                        <option value="en-US">🇺🇸 Inglés</option>
+                        <option value="es-ES">🇪🇸 Español</option>
+                        <option value="fr-FR">🇫🇷 Francés</option>
+                        <option value="pt-BR">🇧🇷 Portugués</option>
+                    </select>
+                </div>
+                <span class="exercise-number" id="numeroEjercicio">EJERCICIO 01</span>
+            </div>
+
+            <div class="phrase-box">
+                <span class="small-label">REPITE ESTA FRASE</span>
+                <h2 id="fraseObjetivo">Hello, how are you?</h2>
+                <p id="traduccion">Hola, ¿cómo estás?</p>
+                <button id="escuchar" class="button secondary">🔊 Escuchar pronunciación</button>
+            </div>
+
+            <div class="microphone-area">
+                <button id="grabar" class="microphone-button" aria-label="Grabar voz">
+                    🎙️
+                </button>
+                <h3>Tu turno de hablar</h3>
+                <p id="estadoMicrofono">Esperando tu voz...</p>
+                <span class="microphone-hint">Pulsa el micrófono y repite la frase.</span>
+            </div>
+
+            <div id="resultado" class="result-box">
+                <div class="result-score">
+                    <span>Tu puntuación</span>
+                    <strong id="puntuacion">0%</strong>
+                </div>
+                <h3 id="mensajeResultado"></h3>
+                <div class="comparison">
+                    <div>
+                        <span>Frase correcta</span>
+                        <p id="textoEsperado"></p>
+                    </div>
+                    <div>
+                        <span>Lo que dijiste</span>
+                        <p id="textoReconocido"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="practice-footer">
+                <p id="consejoMakumba">Escucha la frase y presta atención a cómo se pronuncia.</p>
+                <button id="nuevoEjercicio" class="button primary">Nuevo ejercicio →</button>
+            </div>
+        </section>
+
+        <section class="section-heading" id="traductor">
+            <div>
+                <span class="eyebrow">TRADUCE Y ESCUCHA</span>
+                <h2>Traductor de idiomas</h2>
+                <p>Escribe cualquier texto, tradúcelo y escucha cómo se pronuncia.</p>
+            </div>
+        </section>
+
+        <section class="translator-card">
+            <div class="translator-controls">
+                <div>
+                    <label for="idiomaOrigen">Traducir desde</label>
+                    <select id="idiomaOrigen">
+                        <option value="es">Español</option>
+                        <option value="en">Inglés</option>
+                        <option value="fr">Francés</option>
+                        <option value="pt">Portugués</option>
+                    </select>
+                </div>
+                <span class="translate-arrow">→</span>
+                <div>
+                    <label for="idiomaDestino">Traducir a</label>
+                    <select id="idiomaDestino">
+                        <option value="en">Inglés</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Francés</option>
+                        <option value="pt">Portugués</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="translator-columns">
+                <div class="translation-panel">
+                    <label for="textoOriginal">Tu texto</label>
+                    <textarea id="textoOriginal" placeholder="Escribe aquí lo que quieres traducir..."></textarea>
+                    <span class="character-count" id="contadorTexto">0 / 500</span>
+                </div>
+
+                <div class="translation-panel translated-panel">
+                    <label for="textoTraducido">Traducción</label>
+                    <div id="textoTraducido" class="translation-output">Tu traducción aparecerá aquí...</div>
+                    <span class="character-count" id="estadoTraduccion">Esperando texto</span>
+                </div>
+            </div>
+
+            <div class="translator-actions">
+                <button id="traducirTexto" class="button primary">🌐 Traducir texto</button>
+                <button id="escucharTraduccion" class="button secondary" disabled>🔊 Escuchar traducción</button>
+                <button id="copiarTraduccion" class="button secondary" disabled>📋 Copiar</button>
+            </div>
+            <p class="translator-note">La traducción necesita conexión a internet. La pronunciación utiliza las voces disponibles en tu navegador.</p>
+        </section>
+
+        <section class="section-heading" id="makumba">
+            <div>
+                <span class="eyebrow">TU COMPAÑERO DE APRENDIZAJE</span>
+                <h2>Habla con Makumba</h2>
+                <p>Escribe una frase y Makumba la dirá en voz alta.</p>
+            </div>
+        </section>
+
+        <section class="makumba-card">
+            <div class="character-area">
+                <div class="speech-bubble" id="burbuja">
+                    ¡Hola! Soy Makumba. Pulsa escuchar o habla conmigo.
+                </div>
+                <div class="character" id="personaje">
+                    <div class="character-antenna"></div>
+                    <div class="character-head">
+                        <div class="character-eyes"><i></i><i></i></div>
+                        <div class="character-mouth"></div>
+                    </div>
+                    <div class="character-body">
+                        <span>M</span>
+                    </div>
+                    <div class="character-arm left"></div>
+                    <div class="character-arm right"></div>
+                </div>
+            </div>
+
+            <div class="makumba-chat">
+                <label for="instruccion">Escribe algo para que Makumba lo pronuncie</label>
+                <div class="chat-input-row">
+                    <input id="instruccion" type="text" placeholder="Escribe una frase...">
+                    <button id="ejecutar" class="button primary">Decir texto</button>
+                </div>
+                <p id="estado">Makumba está preparado.</p>
+            </div>
+        </section>
+
+        <footer>
+            <p>© 2026 Makumba Languages · Aprende un idioma cada día.</p>
+        </footer>
+    </main>
+</div>
+
+<script src="java.js"></script>
+</body>
+</html>
