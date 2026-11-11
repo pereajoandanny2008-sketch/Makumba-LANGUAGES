@@ -1,784 +1,438 @@
-document.addEventListener('DOMContentLoaded', () => {
 
-    // =========================================
-    // 1. ELEMENTOS HTML
-    // =========================================
+"use strict";
 
-    const $ = id => document.getElementById(id);
+/* =========================================
+   MAKUMBA LANGUAGES
+   Navegación, autenticación demo y aprendizaje
+========================================= */
 
-    const idioma = $('idioma');
-    const fraseObjetivo = $('fraseObjetivo');
-    const traduccion = $('traduccion');
-    const escuchar = $('escuchar');
-    const nuevoEjercicio = $('nuevoEjercicio');
+const $ = (id) => document.getElementById(id);
+const read = (key, fallback) => {
+    try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
+    catch { return fallback; }
+};
+const write = (key, value) => localStorage.setItem(key, JSON.stringify(value));
 
-    const grabar = $('grabar');
-    const estadoMicrofono = $('estadoMicrofono');
-    const resultado = $('resultado');
-    const puntuacion = $('puntuacion');
-    const mensajeResultado = $('mensajeResultado');
-    const textoEsperado = $('textoEsperado');
-    const textoReconocido = $('textoReconocido');
+let currentUser = null;
+let authMode = "login";
+let toastTimer;
 
-    const burbuja = $('burbuja');
-    const personaje = $('personaje');
-    const instruccion = $('instruccion');
-    const ejecutar = $('ejecutar');
-    const estado = $('estado');
+function showToast(message) {
+    const toast = $("toast");
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 2800);
+}
 
-    const totalPracticas = $('totalPracticas');
-    const mejorPuntuacion = $('mejorPuntuacion');
-    const palabrasCorrectas = $('palabrasCorrectas');
-    const consejoMakumba = $('consejoMakumba');
-    const numeroEjercicio = $('numeroEjercicio');
+/* NAVEGACIÓN DE PANTALLAS */
+function showLanding() {
+    $("landingPage").classList.remove("hidden");
+    $("authPage").classList.add("hidden");
+    $("appPage").classList.add("hidden");
+}
 
-    // Traductor
-    const idiomaOrigen = $('idiomaOrigen');
-    const idiomaDestino = $('idiomaDestino');
-    const textoOriginal = $('textoOriginal');
-    const textoTraducido = $('textoTraducido');
-    const traducirTexto = $('traducirTexto');
-    const escucharTraduccion = $('escucharTraduccion');
-    const copiarTraduccion = $('copiarTraduccion');
-    const contadorTexto = $('contadorTexto');
-    const estadoTraduccion = $('estadoTraduccion');
+function showAuth(mode = "login") {
+    authMode = mode;
+    $("landingPage").classList.add("hidden");
+    $("authPage").classList.remove("hidden");
+    $("appPage").classList.add("hidden");
 
-    // =========================================
-    // 2. EJERCICIOS POR IDIOMA
-    // =========================================
+    const registering = mode === "register";
+    $("authTitle").textContent = registering ? "Crea tu cuenta" : "Bienvenido de nuevo";
+    $("authDescription").textContent = registering
+        ? "Regístrate para comenzar tu aprendizaje."
+        : "Ingresa a tu cuenta para continuar aprendiendo.";
+    $("authSubmit").textContent = registering ? "Crear cuenta" : "Iniciar sesión";
+    $("nameGroup").classList.toggle("hidden", !registering);
+    $("authName").required = registering;
+    $("authSwitch").innerHTML = registering
+        ? '¿Ya tienes cuenta? <a href="#" id="switchAuth">Inicia sesión</a>'
+        : '¿No tienes cuenta? <a href="#" id="switchAuth">Regístrate</a>';
+    $("authMessage").textContent = "";
 
-    const ejercicios = {
-        'en-US': [
-            { frase: 'Hello, how are you?', traduccion: 'Hola, ¿cómo estás?' },
-            { frase: 'My name is John.', traduccion: 'Mi nombre es John.' },
-            { frase: 'I want to learn English.', traduccion: 'Quiero aprender inglés.' },
-            { frase: 'Where is the nearest restaurant?', traduccion: '¿Dónde está el restaurante más cercano?' },
-            { frase: 'I would like a glass of water.', traduccion: 'Me gustaría un vaso de agua.' },
-            { frase: 'Nice to meet you.', traduccion: 'Mucho gusto en conocerte.' },
-            { frase: 'Could you help me, please?', traduccion: '¿Podrías ayudarme, por favor?' },
-            { frase: 'I am practicing my pronunciation.', traduccion: 'Estoy practicando mi pronunciación.' }
-        ],
+    $("switchAuth").addEventListener("click", (event) => {
+        event.preventDefault();
+        showAuth(registering ? "login" : "register");
+    });
+}
 
-        'es-ES': [
-            { frase: 'Hola, ¿cómo estás?', traduccion: 'Hello, how are you?' },
-            { frase: 'Me gusta aprender cosas nuevas.', traduccion: 'I like learning new things.' },
-            { frase: 'Buenos días, mucho gusto.', traduccion: 'Good morning, nice to meet you.' },
-            { frase: '¿Dónde está la estación?', traduccion: 'Where is the station?' },
-            { frase: 'Quiero mejorar mi pronunciación.', traduccion: 'I want to improve my pronunciation.' }
-        ],
+function openApp(user) {
+    currentUser = user;
+    $("landingPage").classList.add("hidden");
+    $("authPage").classList.add("hidden");
+    $("appPage").classList.remove("hidden");
 
-        'fr-FR': [
-            { frase: 'Bonjour, comment allez-vous?', traduccion: 'Hola, ¿cómo está usted?' },
-            { frase: 'Je voudrais apprendre le français.', traduccion: 'Me gustaría aprender francés.' },
-            { frase: 'Comment tu t’appelles?', traduccion: '¿Cómo te llamas?' },
-            { frase: 'Merci beaucoup pour votre aide.', traduccion: 'Muchas gracias por su ayuda.' },
-            { frase: 'Je suis très heureux.', traduccion: 'Estoy muy feliz.' }
-        ],
+    const name = user.name || user.email.split("@")[0];
+    $("sidebarName").textContent = name;
+    $("welcomeName").textContent = name;
+    $("sidebarAvatar").textContent = name.charAt(0).toUpperCase();
+    $("topAvatar").textContent = name.charAt(0).toUpperCase();
 
-        'pt-BR': [
-            { frase: 'Olá, como você está?', traduccion: 'Hola, ¿cómo estás?' },
-            { frase: 'Eu quero aprender português.', traduccion: 'Quiero aprender portugués.' },
-            { frase: 'Muito prazer em conhecer você.', traduccion: 'Mucho gusto en conocerte.' },
-            { frase: 'Onde fica o restaurante?', traduccion: '¿Dónde queda el restaurante?' },
-            { frase: 'Eu gosto de estudar idiomas.', traduccion: 'Me gusta estudiar idiomas.' }
-        ]
+    navigate("inicio");
+    updateStats();
+}
+
+function navigate(page) {
+    document.querySelectorAll(".content-page").forEach(section => section.classList.remove("active"));
+    document.querySelectorAll(".nav-item").forEach(button => button.classList.remove("active"));
+
+    const selectedPage = $("page-" + page);
+    if (!selectedPage) return;
+    selectedPage.classList.add("active");
+
+    const navButton = document.querySelector(`.nav-item[data-page="${page}"]`);
+    if (navButton) navButton.classList.add("active");
+
+    const titles = {
+        inicio: "Inicio",
+        practica: "Pronunciación",
+        academia: "Academia",
+        frases: "Frases",
+        juegos: "Juegos",
+        gramatica: "Gramática",
+        traductor: "Traductor",
+        progreso: "Mi progreso"
     };
+    $("pageTitle").textContent = titles[page] || "Makumba";
+    $("sidebar").classList.remove("open");
 
-    // =========================================
-    // 3. ESTADÍSTICAS
-    // =========================================
+    if (page === "progreso") updateStats();
+    if (page === "frases") renderPhrases();
+    if (page === "juegos") newGame();
+}
 
-    function cargarEstadisticas() {
-        try {
-            const datos = JSON.parse(
-                localStorage.getItem('makumbaEstadisticas')
-            );
+function toggleSidebar() {
+    $("sidebar").classList.toggle("open");
+}
 
-            return {
-                practicas: Number(datos?.practicas) || 0,
-                mejor: Number(datos?.mejor) || 0,
-                palabras: Number(datos?.palabras) || 0
-            };
-        } catch (error) {
-            return {
-                practicas: 0,
-                mejor: 0,
-                palabras: 0
-            };
-        }
-    }
+/* REGISTRO E INICIO DE SESIÓN: DEMOSTRACIÓN LOCAL */
+$("authForm").addEventListener("submit", (event) => {
+    event.preventDefault();
 
-    let estadisticas = cargarEstadisticas();
+    const email = $("authEmail").value.trim().toLowerCase();
+    const password = $("authPassword").value;
+    const users = read("makumbaUsers", []);
 
-    function actualizarEstadisticas() {
-        totalPracticas.textContent = estadisticas.practicas;
-        mejorPuntuacion.textContent = estadisticas.mejor + '%';
-        palabrasCorrectas.textContent = estadisticas.palabras;
-    }
-
-    function guardarEstadisticas() {
-        try {
-            localStorage.setItem(
-                'makumbaEstadisticas',
-                JSON.stringify(estadisticas)
-            );
-        } catch (error) {
-            console.error('No se pudieron guardar las estadísticas.', error);
-        }
-    }
-
-    actualizarEstadisticas();
-
-    // =========================================
-    // 4. VOZ DE MAKUMBA
-    // =========================================
-
-    let temporizadorVoz;
-
-    function hablar(texto, idiomaVoz = idioma.value) {
-
-        if (!('speechSynthesis' in window)) {
-            estado.textContent =
-                'Tu navegador no admite reproducción de voz.';
-            return;
+    if (authMode === "register") {
+        const name = $("authName").value.trim();
+        if (!name) return $("authMessage").textContent = "Escribe tu nombre.";
+        if (users.some(user => user.email === email)) {
+            return $("authMessage").textContent = "Este correo ya está registrado.";
         }
 
-        if (!texto || !texto.trim()) return;
-
-        window.speechSynthesis.cancel();
-
-        burbuja.textContent = texto;
-        burbuja.classList.add('visible');
-
-        personaje.classList.add('hablando');
-
-        const mensaje = new SpeechSynthesisUtterance(texto);
-
-        mensaje.lang = idiomaVoz;
-        mensaje.rate = 0.88;
-        mensaje.pitch = 1.05;
-        mensaje.volume = 1;
-
-        mensaje.onstart = () => {
-            personaje.classList.add('hablando');
-            estado.textContent = 'Makumba está hablando...';
-        };
-
-        mensaje.onend = () => {
-            personaje.classList.remove('hablando');
-            estado.textContent = 'Makumba está preparado.';
-        };
-
-        mensaje.onerror = event => {
-            personaje.classList.remove('hablando');
-            estado.textContent =
-                'Error al reproducir la voz: ' + event.error;
-        };
-
-        clearTimeout(temporizadorVoz);
-
-        temporizadorVoz = setTimeout(() => {
-            window.speechSynthesis.speak(mensaje);
-        }, 100);
-    }
-
-    // =========================================
-    // 5. EJERCICIOS
-    // =========================================
-
-    let ejercicioActual = 0;
-
-    function mostrarEjercicio() {
-
-        const lista = ejercicios[idioma.value];
-        const ejercicio = lista[ejercicioActual];
-
-        fraseObjetivo.textContent = ejercicio.frase;
-        traduccion.textContent = ejercicio.traduccion;
-
-        numeroEjercicio.textContent =
-            'EJERCICIO ' +
-            String(ejercicioActual + 1).padStart(2, '0');
-
-        textoEsperado.textContent = ejercicio.frase;
-
-        resultado.classList.remove('visible');
-
-        estadoMicrofono.textContent = 'Esperando tu voz...';
-
-        consejoMakumba.textContent =
-            'Escucha la frase y presta atención a cómo se pronuncia.';
-    }
-
-    function cambiarEjercicio() {
-
-        const lista = ejercicios[idioma.value];
-
-        let nuevo = ejercicioActual;
-
-        if (lista.length > 1) {
-            while (nuevo === ejercicioActual) {
-                nuevo = Math.floor(Math.random() * lista.length);
-            }
-        }
-
-        ejercicioActual = nuevo;
-
-        mostrarEjercicio();
-
-        hablar(
-            '¡Vamos con un nuevo ejercicio! Escucha la frase y repítela.'
-        );
-    }
-
-    nuevoEjercicio.addEventListener('click', cambiarEjercicio);
-
-    idioma.addEventListener('change', () => {
-
-        ejercicioActual = 0;
-
-        mostrarEjercicio();
-
-        hablar('Has cambiado el idioma. ¡Vamos a practicar!');
-    });
-
-    escuchar.addEventListener('click', () => {
-
-        hablar(fraseObjetivo.textContent, idioma.value);
-
-        estadoMicrofono.textContent =
-            'Escucha atentamente la pronunciación.';
-    });
-
-    // =========================================
-    // 6. RECONOCIMIENTO DE VOZ
-    // =========================================
-
-    const SpeechRecognition =
-        window.SpeechRecognition ||
-        window.webkitSpeechRecognition;
-
-    let reconocimiento = null;
-    let grabando = false;
-
-    if (SpeechRecognition) {
-
-        reconocimiento = new SpeechRecognition();
-
-        reconocimiento.continuous = false;
-        reconocimiento.interimResults = false;
-        reconocimiento.maxAlternatives = 3;
-
-        reconocimiento.onstart = () => {
-
-            grabando = true;
-
-            grabar.classList.add('recording');
-
-            estadoMicrofono.textContent =
-                '🎙️ Te estoy escuchando. Habla ahora...';
-
-            personaje.classList.add('escuchando');
-
-            burbuja.textContent = '¡Te estoy escuchando!';
-            burbuja.classList.add('visible');
-        };
-
-        reconocimiento.onresult = event => {
-
-            const alternativas = event.results[0];
-
-            let texto = alternativas[0].transcript;
-            let confianza = alternativas[0].confidence || 0;
-
-            for (let i = 1; i < alternativas.length; i++) {
-
-                const otraConfianza =
-                    alternativas[i].confidence || 0;
-
-                if (otraConfianza > confianza) {
-                    texto = alternativas[i].transcript;
-                    confianza = otraConfianza;
-                }
-            }
-
-            evaluarPronunciacion(texto);
-        };
-
-        reconocimiento.onerror = event => {
-
-            const errores = {
-                'not-allowed': 'Debes permitir el acceso al micrófono.',
-                'service-not-allowed': 'El navegador bloqueó el reconocimiento de voz.',
-                'no-speech': 'No detecté tu voz. Inténtalo nuevamente.',
-                'audio-capture': 'No se encontró un micrófono disponible.',
-                'network': 'Error de conexión al reconocer tu voz.',
-                'language-not-supported': 'Este idioma no está disponible para el reconocimiento.'
-            };
-
-            const mensaje = errores[event.error] ||
-                'Ocurrió un problema con el micrófono: ' + event.error;
-
-            estadoMicrofono.textContent = mensaje;
-
-            burbuja.textContent = mensaje;
-            burbuja.classList.add('visible');
-        };
-
-        reconocimiento.onend = () => {
-
-            grabando = false;
-
-            grabar.classList.remove('recording');
-
-            personaje.classList.remove('escuchando');
-        };
-
+        const user = { name, email, password };
+        users.push(user);
+        write("makumbaUsers", users);
+        write("makumbaSession", { name, email });
+        $("authForm").reset();
+        openApp(user);
+        showToast("¡Cuenta creada correctamente!");
     } else {
+        const user = users.find(item => item.email === email && item.password === password);
+        if (!user) return $("authMessage").textContent = "Correo o contraseña incorrectos.";
 
-        grabar.disabled = true;
-
-        estadoMicrofono.textContent =
-            'Tu navegador no admite reconocimiento de voz. Prueba con Chrome o Edge.';
+        write("makumbaSession", { name: user.name, email: user.email });
+        $("authForm").reset();
+        openApp(user);
+        showToast("¡Bienvenido nuevamente!");
     }
+});
 
-    grabar.addEventListener('click', () => {
+function logout() {
+    localStorage.removeItem("makumbaSession");
+    currentUser = null;
+    showLanding();
+    showToast("Has cerrado sesión.");
+}
 
-        if (!reconocimiento) {
-            estadoMicrofono.textContent =
-                'El reconocimiento de voz no está disponible.';
-            return;
-        }
-
-        if (grabando) {
-            reconocimiento.stop();
-            return;
-        }
-
-        if (!window.isSecureContext) {
-            estadoMicrofono.textContent =
-                'Abre la página mediante Live Server o una conexión HTTPS.';
-            return;
-        }
-
-        window.speechSynthesis.cancel();
-
-        personaje.classList.remove('hablando');
-
-        reconocimiento.lang = idioma.value;
-
-        try {
-            reconocimiento.start();
-        } catch (error) {
-            estadoMicrofono.textContent =
-                'No se pudo iniciar el micrófono. Intenta nuevamente.';
-            console.error(error);
-        }
+/* ESTADÍSTICAS */
+function userKey() {
+    return currentUser ? currentUser.email : "visitante";
+}
+function getStats() {
+    return read("makumbaStats_" + userKey(), {
+        xp: 0, lessons: 0, practices: 0, correct: 0, attempts: 0
     });
+}
+function saveStats(stats) {
+    write("makumbaStats_" + userKey(), stats);
+    updateStats();
+}
+function updateStats() {
+    if (!currentUser) return;
+    const stats = getStats();
+    $("xpValue").textContent = stats.xp;
+    $("lessonsValue").textContent = stats.lessons;
+    $("accuracyValue").textContent = stats.attempts
+        ? Math.round(stats.correct / stats.attempts * 100) + "%"
+        : "0%";
+    $("progressXP").textContent = stats.xp + " XP";
+    $("progressLessons").textContent = stats.lessons;
+    $("progressPractices").textContent = stats.practices;
+    const percent = Math.min(100, stats.lessons * 10 + stats.practices * 2);
+    $("progressBar").style.width = percent + "%";
+    $("progressText").textContent = percent
+        ? `Has completado aproximadamente el ${percent}% de tu recorrido inicial.`
+        : "¡Comienza a aprender para registrar tu progreso!";
+}
 
-    // =========================================
-    // 7. COMPARACIÓN DE PRONUNCIACIÓN
-    // =========================================
+/* SÍNTESIS DE VOZ */
+function speakText(text, language = "en-US") {
+    if (!("speechSynthesis" in window)) {
+        showToast("Tu navegador no permite reproducir voz.");
+        return;
+    }
+    speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = language;
+    utterance.rate = 0.85;
+    speechSynthesis.speak(utterance);
+}
+window.speakText = speakText;
 
-    function normalizar(texto) {
+/* PRONUNCIACIÓN */
+const practiceSentences = {
+    "en-US": ["Hello, how are you?", "My name is Daniel.", "I love learning languages.", "Have a wonderful day."],
+    "es-ES": ["Hola, ¿cómo estás?", "Me gusta aprender idiomas.", "Buenos días, mucho gusto.", "Hasta pronto."],
+    "fr-FR": ["Bonjour, comment ça va?", "Je m'appelle Daniel.", "J'aime apprendre les langues.", "Bonne journée."],
+    "pt-BR": ["Olá, como você está?", "Meu nome é Daniel.", "Eu gosto de aprender idiomas.", "Tenha um bom dia."]
+};
+let practiceIndex = 0;
+let recognition = null;
 
-        return texto
-            .toLocaleLowerCase()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .replace(/[’']/g, '')
-            .replace(/[^\p{L}\p{N}\s]/gu, ' ')
-            .replace(/\s+/g, ' ')
-            .trim();
+function updatePracticeText() {
+    $("practiceText").textContent = practiceSentences[$("practiceLanguage").value][practiceIndex % 4];
+    $("practiceResult").classList.add("hidden");
+}
+$("practiceLanguage").addEventListener("change", () => {
+    practiceIndex = 0;
+    updatePracticeText();
+});
+$("nextPractice").addEventListener("click", () => {
+    practiceIndex++;
+    updatePracticeText();
+});
+$("speakPractice").addEventListener("click", () => {
+    speakText($("practiceText").textContent, $("practiceLanguage").value);
+});
+
+$("startRecording").addEventListener("click", () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+        $("recordingStatus").textContent = "Tu navegador no admite reconocimiento de voz. Usa Chrome y permite el micrófono.";
+        return;
     }
 
-    function distanciaPalabras(a, b) {
+    recognition = new SpeechRecognition();
+    recognition.lang = $("practiceLanguage").value;
+    recognition.continuous = false;
+    recognition.interimResults = false;
 
-        const matriz = Array.from(
-            { length: a.length + 1 },
-            () => Array(b.length + 1).fill(0)
-        );
+    $("recordingStatus").textContent = "🎙️ Escuchando... habla ahora.";
+    $("startRecording").disabled = true;
 
-        for (let i = 0; i <= a.length; i++) {
-            matriz[i][0] = i;
+    recognition.onresult = (event) => {
+        const spoken = event.results[0][0].transcript;
+        const expected = $("practiceText").textContent;
+        const normalize = value => value.toLowerCase().replace(/[.,!?¿¡]/g, "").trim();
+        const a = normalize(expected);
+        const b = normalize(spoken);
+        const similarity = a === b ? 100 : Math.max(0, Math.round((1 - Math.abs(a.length - b.length) / Math.max(a.length, b.length)) * 75));
+
+        $("practiceResult").classList.remove("hidden");
+        $("practiceResult").innerHTML = `<strong>Tu respuesta:</strong> ${escapeHTML(spoken)}<br><strong>Frase esperada:</strong> ${escapeHTML(expected)}<br><strong>Coincidencia aproximada:</strong> ${similarity}%<br><small>Esta puntuación compara el texto reconocido, no evalúa con precisión tu acento.</small>`;
+        $("recordingStatus").textContent = "¡Práctica terminada!";
+        const stats = getStats();
+        stats.practices++;
+        stats.attempts++;
+        if (similarity >= 70) {
+            stats.correct++;
+            stats.xp += 10;
         }
-
-        for (let j = 0; j <= b.length; j++) {
-            matriz[0][j] = j;
-        }
-
-        for (let i = 1; i <= a.length; i++) {
-
-            for (let j = 1; j <= b.length; j++) {
-
-                const costo = a[i - 1] === b[j - 1] ? 0 : 1;
-
-                matriz[i][j] = Math.min(
-                    matriz[i - 1][j] + 1,
-                    matriz[i][j - 1] + 1,
-                    matriz[i - 1][j - 1] + costo
-                );
-            }
-        }
-
-        return matriz[a.length][b.length];
-    }
-
-    function evaluarPronunciacion(textoUsuario) {
-
-        const correcta = normalizar(fraseObjetivo.textContent);
-        const usuario = normalizar(textoUsuario);
-
-        const palabrasObjetivo = correcta.split(' ').filter(Boolean);
-        const palabrasUsuario = usuario.split(' ').filter(Boolean);
-
-        if (!palabrasObjetivo.length || !palabrasUsuario.length) {
-
-            estadoMicrofono.textContent =
-                'No se reconocieron palabras suficientes. Inténtalo otra vez.';
-
-            return;
-        }
-
-        const errores = distanciaPalabras(
-            palabrasObjetivo,
-            palabrasUsuario
-        );
-
-        const total = Math.max(
-            palabrasObjetivo.length,
-            palabrasUsuario.length
-        );
-
-        const aciertos = Math.max(0, total - errores);
-
-        const porcentaje = Math.round((aciertos / total) * 100);
-
-        let mensaje;
-        let consejo;
-
-        if (porcentaje >= 90) {
-
-            mensaje = '¡Excelente! Reconociste casi toda la frase.';
-
-            consejo = '¡Muy bien! Intenta mantener ese ritmo y prueba otra frase.';
-
-        } else if (porcentaje >= 70) {
-
-            mensaje = '¡Buen trabajo! Vas por buen camino.';
-
-            consejo = 'Escucha nuevamente la frase y practica las palabras que faltaron.';
-
-        } else if (porcentaje >= 40) {
-
-            mensaje = 'Buen intento. Todavía podemos mejorar.';
-
-            consejo = 'Practica más despacio y presta atención a cada palabra.';
-
-        } else {
-
-            mensaje = 'No te preocupes. Vamos a intentarlo otra vez.';
-
-            consejo = 'Escucha la frase varias veces antes de repetirla.';
-        }
-
-        puntuacion.textContent = porcentaje + '%';
-
-        mensajeResultado.textContent = mensaje;
-
-        textoEsperado.textContent = fraseObjetivo.textContent;
-
-        textoReconocido.textContent = textoUsuario;
-
-        resultado.classList.add('visible');
-
-        estadoMicrofono.textContent =
-            'Práctica terminada. ¡Sigue aprendiendo!';
-
-        consejoMakumba.textContent = consejo;
-
-        estadisticas.practicas++;
-
-        estadisticas.mejor = Math.max(
-            estadisticas.mejor,
-            porcentaje
-        );
-
-        estadisticas.palabras += aciertos;
-
-        guardarEstadisticas();
-        actualizarEstadisticas();
-
-        hablar(
-            porcentaje >= 70
-                ? '¡Muy bien! Sigue practicando. Lo estás haciendo genial.'
-                : 'No te rindas. Escúchame otra vez y vamos a practicar juntos.'
-        );
-    }
-
-    // =========================================
-    // 8. CONVERSAR CON MAKUMBA
-    // =========================================
-
-    function enviarMensaje() {
-
-        const texto = instruccion.value.trim();
-
-        if (!texto) {
-            estado.textContent = 'Primero escribe un mensaje.';
-            return;
-        }
-
-        hablar(texto, idioma.value);
-
-        instruccion.value = '';
-    }
-
-    ejecutar.addEventListener('click', enviarMensaje);
-
-    instruccion.addEventListener('keydown', event => {
-
-        if (event.key === 'Enter') {
-            enviarMensaje();
-        }
-    });
-
-    // =========================================
-    // 9. TRADUCTOR DE TEXTOS
-    // =========================================
-
-    const codigosVoz = {
-        es: 'es-ES',
-        en: 'en-US',
-        fr: 'fr-FR',
-        pt: 'pt-BR'
+        saveStats(stats);
     };
 
-    let ultimaTraduccion = '';
+    recognition.onerror = (event) => {
+        $("recordingStatus").textContent = "No se pudo usar el micrófono: " + event.error + ". Revisa los permisos del navegador.";
+    };
+    recognition.onend = () => { $("startRecording").disabled = false; };
+    recognition.start();
+});
 
-    textoOriginal.addEventListener('input', () => {
-
-        contadorTexto.textContent =
-            textoOriginal.value.length + ' / 500';
-
-        if (textoOriginal.value.length > 500) {
-            textoOriginal.value = textoOriginal.value.slice(0, 500);
-            contadorTexto.textContent = '500 / 500';
-        }
+/* ACADEMIA */
+const lessons = {
+    A1: ["Saludos básicos", "Aprende a saludar y presentarte en inglés."],
+    A2: ["Conversaciones cotidianas", "Aprende a comunicarte en situaciones comunes."],
+    B1: ["Expresar opiniones", "Aprende a expresar tus ideas y opiniones."],
+    B2: ["Conversación avanzada", "Desarrolla conversaciones más complejas."],
+    C1: ["Expresión profesional", "Practica expresiones académicas y profesionales."],
+    C2: ["Dominio del idioma", "Perfecciona tu comprensión y expresión."]
+};
+document.querySelectorAll(".level-card").forEach(button => {
+    button.addEventListener("click", () => {
+        document.querySelectorAll(".level-card").forEach(item => item.classList.remove("selected"));
+        button.classList.add("selected");
+        const level = button.dataset.level;
+        $("lessonTitle").textContent = `Nivel ${level} · ${lessons[level][0]}`;
+        $("lessonDescription").textContent = lessons[level][1];
     });
+});
+$("completeLesson").addEventListener("click", () => {
+    const stats = getStats();
+    stats.lessons++;
+    stats.xp += 25;
+    saveStats(stats);
+    showToast("¡Lección completada! +25 XP");
+});
 
-    async function traducir() {
+/* FRASES */
+const phrases = [
+    { en: "Good morning", es: "Buenos días", fr: "Bonjour", pt: "Bom dia" },
+    { en: "Thank you", es: "Gracias", fr: "Merci", pt: "Obrigado" },
+    { en: "How are you?", es: "¿Cómo estás?", fr: "Comment ça va?", pt: "Como você está?" },
+    { en: "See you later", es: "Hasta luego", fr: "À plus tard", pt: "Até logo" },
+    { en: "I need help", es: "Necesito ayuda", fr: "J'ai besoin d'aide", pt: "Preciso de ajuda" },
+    { en: "I love learning", es: "Me encanta aprender", fr: "J'aime apprendre", pt: "Adoro aprender" }
+];
+function renderPhrases() {
+    const language = $("phraseLanguage").value;
+    const query = $("phraseSearch").value.toLowerCase();
+    const langName = { "en-US": "en", "fr-FR": "fr", "pt-BR": "pt" }[language];
+    $("phraseList").innerHTML = "";
+    phrases.filter(item => (item[langName] + item.es).toLowerCase().includes(query)).forEach(item => {
+        const div = document.createElement("div");
+        div.className = "phrase-item";
+        div.innerHTML = `<div><strong>${escapeHTML(item[langName])}</strong><br><small>${escapeHTML(item.es)}</small></div>`;
+        const button = document.createElement("button");
+        button.textContent = "🔊";
+        button.addEventListener("click", () => speakText(item[langName], language));
+        div.appendChild(button);
+        $("phraseList").appendChild(div);
+    });
+}
+$("phraseSearch").addEventListener("input", renderPhrases);
+$("phraseLanguage").addEventListener("change", renderPhrases);
 
-        const texto = textoOriginal.value.trim();
-
-        const origen = idiomaOrigen.value;
-        const destino = idiomaDestino.value;
-
-        if (!texto) {
-
-            estadoTraduccion.textContent =
-                'Primero escribe un texto.';
-
-            textoOriginal.focus();
-
-            return;
-        }
-
-        if (origen === destino) {
-
-            textoTraducido.textContent = texto;
-            textoTraducido.classList.remove('placeholder');
-
-            ultimaTraduccion = texto;
-
-            escucharTraduccion.disabled = false;
-            copiarTraduccion.disabled = false;
-
-            estadoTraduccion.textContent =
-                'El idioma de origen y destino son iguales.';
-
-            return;
-        }
-
-        traducirTexto.disabled = true;
-        traducirTexto.textContent = 'Traduciendo...';
-
-        estadoTraduccion.textContent =
-            'Conectando con el servicio de traducción...';
-
-        textoTraducido.textContent =
-            'Estamos traduciendo tu texto...';
-
-        textoTraducido.classList.add('placeholder');
-
-        escucharTraduccion.disabled = true;
-        copiarTraduccion.disabled = true;
-
-        try {
-
-            const parametros = new URLSearchParams({
-                q: texto,
-                langpair: origen + '|' + destino
-            });
-
-            const respuesta = await fetch(
-                'https://api.mymemory.translated.net/get?' +
-                parametros.toString()
-            );
-
-            if (!respuesta.ok) {
-                throw new Error('El servicio de traducción no respondió.');
+/* JUEGO */
+const gameQuestions = [
+    { word: "Apple", answer: "Manzana", options: ["Manzana", "Casa", "Perro", "Agua"] },
+    { word: "Book", answer: "Libro", options: ["Mesa", "Libro", "Ventana", "Cielo"] },
+    { word: "Water", answer: "Agua", options: ["Fuego", "Agua", "Tierra", "Comida"] },
+    { word: "House", answer: "Casa", options: ["Escuela", "Coche", "Casa", "Árbol"] },
+    { word: "Friend", answer: "Amigo", options: ["Familia", "Amigo", "Profesor", "Hermano"] }
+];
+let gameIndex = 0;
+function newGame() {
+    const q = gameQuestions[gameIndex % gameQuestions.length];
+    $("gameWord").textContent = q.word;
+    $("gameFeedback").textContent = "";
+    $("gameOptions").innerHTML = "";
+    q.options.forEach(option => {
+        const button = document.createElement("button");
+        button.textContent = option;
+        button.addEventListener("click", () => {
+            if (button.disabled) return;
+            document.querySelectorAll("#gameOptions button").forEach(b => b.disabled = true);
+            if (option === q.answer) {
+                $("gameFeedback").textContent = "¡Correcto! +10 XP 🎉";
+                const stats = getStats();
+                stats.xp += 10;
+                saveStats(stats);
+            } else {
+                $("gameFeedback").textContent = "No es correcto. La respuesta era: " + q.answer;
             }
-
-            const datos = await respuesta.json();
-
-            if (datos.responseStatus !== 200) {
-                throw new Error(
-                    datos.responseDetails || 'No se pudo traducir el texto.'
-                );
-            }
-
-            const traduccionObtenida =
-                datos.responseData?.translatedText;
-
-            if (!traduccionObtenida) {
-                throw new Error('No se recibió una traducción.');
-            }
-
-            ultimaTraduccion = traduccionObtenida;
-
-            textoTraducido.textContent = ultimaTraduccion;
-            textoTraducido.classList.remove('placeholder');
-
-            estadoTraduccion.textContent = 'Traducción completada.';
-
-            escucharTraduccion.disabled = false;
-            copiarTraduccion.disabled = false;
-
-        } catch (error) {
-
-            console.error('Error del traductor:', error);
-
-            textoTraducido.textContent =
-                'No se pudo realizar la traducción. Revisa tu conexión a internet e inténtalo nuevamente.';
-
-            textoTraducido.classList.add('placeholder');
-
-            estadoTraduccion.textContent =
-                error.message || 'Error al traducir.';
-
-            ultimaTraduccion = '';
-
-        } finally {
-
-            traducirTexto.disabled = false;
-            traducirTexto.textContent = '🌐 Traducir texto';
-        }
-    }
-
-    traducirTexto.addEventListener('click', traducir);
-
-    textoOriginal.addEventListener('keydown', event => {
-
-        if (event.ctrlKey && event.key === 'Enter') {
-            traducir();
-        }
-    });
-
-    // =========================================
-    // 10. ESCUCHAR LA TRADUCCIÓN
-    // =========================================
-
-    escucharTraduccion.addEventListener('click', () => {
-
-        if (!ultimaTraduccion) return;
-
-        const idiomaVoz = codigosVoz[idiomaDestino.value] || 'en-US';
-
-        hablar(ultimaTraduccion, idiomaVoz);
-    });
-
-    // =========================================
-    // 11. COPIAR LA TRADUCCIÓN
-    // =========================================
-
-    copiarTraduccion.addEventListener('click', async () => {
-
-        if (!ultimaTraduccion) return;
-
-        try {
-
-            await navigator.clipboard.writeText(ultimaTraduccion);
-
-            estadoTraduccion.textContent =
-                '¡Traducción copiada al portapapeles!';
-
-        } catch (error) {
-
-            estadoTraduccion.textContent =
-                'No se pudo copiar. Selecciona el texto y cópialo manualmente.';
-        }
-    });
-
-    // =========================================
-    // 12. INTERCAMBIAR IDIOMAS
-    // =========================================
-
-    idiomaOrigen.addEventListener('change', () => {
-
-        ultimaTraduccion = '';
-
-        escucharTraduccion.disabled = true;
-        copiarTraduccion.disabled = true;
-
-        textoTraducido.textContent =
-            'Tu traducción aparecerá aquí...';
-
-        textoTraducido.classList.add('placeholder');
-        estadoTraduccion.textContent = 'Esperando texto';
-    });
-
-    idiomaDestino.addEventListener('change', () => {
-
-        ultimaTraduccion = '';
-
-        escucharTraduccion.disabled = true;
-        copiarTraduccion.disabled = true;
-
-        textoTraducido.textContent =
-            'Tu traducción aparecerá aquí...';
-
-        textoTraducido.classList.add('placeholder');
-        estadoTraduccion.textContent = 'Esperando texto';
-    });
-
-    // =========================================
-    // 13. NAVEGACIÓN
-    // =========================================
-
-    document.querySelectorAll('.nav-link').forEach(link => {
-
-        link.addEventListener('click', () => {
-
-            document.querySelectorAll('.nav-link').forEach(item => {
-                item.classList.remove('active');
-            });
-
-            link.classList.add('active');
         });
+        $("gameOptions").appendChild(button);
     });
+}
+function nextGame() {
+    gameIndex++;
+    newGame();
+}
+$("nextGame").addEventListener("click", nextGame);
 
-    // =========================================
-    // 14. INICIAR MAKUMBA
-    // =========================================
+/* TRADUCTOR */
+$("translateButton").addEventListener("click", async () => {
+    const text = $("translateInput").value.trim();
+    const target = $("translateLanguage").value;
+    if (!text) return showToast("Escribe algo para traducir.");
 
-    mostrarEjercicio();
+    $("translationResult").textContent = "Traduciendo...";
+    try {
+        const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=es|${target}`);
+        const data = await response.json();
+        $("translationResult").textContent = data.responseData?.translatedText || "No se encontró una traducción.";
+    } catch {
+        $("translationResult").textContent = "No se pudo conectar con el servicio de traducción. Inténtalo nuevamente.";
+    }
+});
 
-    estado.textContent = 'Makumba está preparado.';
+/* ROBOT FLOTANTE ARRASTRABLE */
+const robot = $("makumbaRobot");
+let dragging = false;
+let moved = false;
+let pointerOffsetX = 0;
+let pointerOffsetY = 0;
 
-    burbuja.textContent =
-        '¡Hola! Soy Makumba. Pulsa escuchar o habla conmigo.';
+robot.addEventListener("pointerdown", (event) => {
+    if (event.target.closest("#robotChatButton")) return;
+    dragging = true;
+    moved = false;
+    const rect = robot.getBoundingClientRect();
+    pointerOffsetX = event.clientX - rect.left;
+    pointerOffsetY = event.clientY - rect.top;
+    robot.classList.add("dragging");
+    robot.setPointerCapture(event.pointerId);
+});
 
-    burbuja.classList.add('visible');
+robot.addEventListener("pointermove", (event) => {
+    if (!dragging) return;
+    moved = true;
+    const x = Math.max(0, Math.min(window.innerWidth - robot.offsetWidth, event.clientX - pointerOffsetX));
+    const y = Math.max(0, Math.min(window.innerHeight - robot.offsetHeight, event.clientY - pointerOffsetY));
+    robot.style.left = x + "px";
+    robot.style.top = y + "px";
+    robot.style.right = "auto";
+    robot.style.bottom = "auto";
+});
 
+function stopDragging() {
+    if (!dragging) return;
+    dragging = false;
+    robot.classList.remove("dragging");
+}
+robot.addEventListener("pointerup", stopDragging);
+robot.addEventListener("pointercancel", stopDragging);
+
+$("robotChatButton").addEventListener("click", (event) => {
+    event.stopPropagation();
+    const message = $("robotSpeech");
+    message.textContent = "¡Hola! Soy Makumba. ¡Vamos a aprender juntos! 🤖";
+    robot.classList.add("show-message");
+    speakText("Hello! Let's learn together!", "en-US");
+    setTimeout(() => robot.classList.remove("show-message"), 4000);
+});
+
+/* SEGURIDAD DE TEXTO INSERTADO */
+function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+    })[char]);
+}
+
+/* INICIALIZACIÓN */
+document.querySelectorAll(".nav-item").forEach(button => {
+    button.addEventListener("click", () => navigate(button.dataset.page));
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+    updatePracticeText();
+    renderPhrases();
+    newGame();
+
+    const session = read("makumbaSession", null);
+    if (session) openApp(session);
+    else showLanding();
 });

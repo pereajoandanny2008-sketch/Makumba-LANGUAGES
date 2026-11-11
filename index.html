@@ -1,231 +1,231 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#10172a">
     <title>Makumba Languages</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div class="app">
-    <aside class="sidebar">
-        <div class="brand">
-            <div class="brand-icon">M</div>
-            <div>
-                <h2>Makumba</h2>
-                <span>LANGUAGES</span>
-            </div>
-        </div>
-
-        <nav>
-            <a href="#inicio" class="nav-link active">⌂ <span>Inicio</span></a>
-            <a href="#practica" class="nav-link">🎯 <span>Pronunciación</span></a>
-            <a href="#traductor" class="nav-link">🌐 <span>Traductor</span></a>
-            <a href="#makumba" class="nav-link">🤖 <span>Hablar con Makumba</span></a>
+    <!-- PORTADA -->
+    <section id="landingPage" class="landing-page">
+        <nav class="landing-nav">
+            <div class="brand"><span class="brand-icon">M</span> Makumba Languages</div>
+            <button class="btn-primary" onclick="showAuth('login')">Ingresar</button>
         </nav>
 
-        <div class="sidebar-bottom">
-            <div class="mini-character">🤖</div>
-            <p>¡Aprender idiomas nunca fue tan divertido!</p>
+        <div class="hero">
+            <div class="hero-content">
+                <span class="eyebrow">APRENDE IDIOMAS A TU RITMO</span>
+                <h1>Habla un nuevo idioma.<br><span>Abre un mundo nuevo.</span></h1>
+                <p>Practica, aprende y mejora tu pronunciación con herramientas interactivas y la ayuda de Makumba.</p>
+                <button class="btn-primary btn-large" onclick="showAuth('register')">Comenzar ahora →</button>
+                <div class="hero-stats">
+                    <div><strong>6</strong><small>Niveles de aprendizaje</small></div>
+                    <div><strong>4</strong><small>Idiomas disponibles</small></div>
+                    <div><strong>∞</strong><small>Oportunidades</small></div>
+                </div>
+            </div>
+            <div class="hero-art">
+                <div class="hero-glow"></div>
+                <div class="hero-card">
+                    <div class="hero-robot">🤖</div>
+                    <h3>¡Hola, aprendiz!</h3>
+                    <p>¿Listo para aprender algo nuevo?</p>
+                    <span class="robot-status">● Makumba está en línea</span>
+                </div>
+                <div class="floating-bubble bubble-one">Hello! 👋</div>
+                <div class="floating-bubble bubble-two">Bonjour!</div>
+                <div class="floating-bubble bubble-three">¡Vamos!</div>
+            </div>
         </div>
-    </aside>
 
-    <main class="main-content" id="inicio">
-        <header class="topbar">
-            <div>
-                <span class="eyebrow">TU AULA DE IDIOMAS</span>
-                <h1>¡Hola! Bienvenido a Makumba</h1>
-                <p>Practica, traduce y mejora tu pronunciación.</p>
-            </div>
-            <div class="online-status">
-                <span class="online-dot"></span> Makumba está en línea
-            </div>
-        </header>
+        <div class="landing-features">
+            <article class="feature-card"><span>🎤</span><h3>Pronunciación</h3><p>Practica tu voz y mejora tu pronunciación.</p></article>
+            <article class="feature-card"><span>📚</span><h3>Academia</h3><p>Aprende paso a paso con diferentes niveles.</p></article>
+            <article class="feature-card"><span>🎮</span><h3>Juegos</h3><p>Aprende mientras te diviertes.</p></article>
+        </div>
+    </section>
 
-        <section class="stats-grid">
-            <article class="stat-card">
-                <span class="stat-icon">📚</span>
-                <div>
-                    <p>Prácticas realizadas</p>
-                    <h2 id="totalPracticas">0</h2>
+    <!-- AUTENTICACIÓN -->
+    <section id="authPage" class="auth-page hidden">
+        <div class="auth-decoration"></div>
+        <div class="auth-card">
+            <button class="back-button" onclick="showLanding()">← Volver</button>
+            <div class="brand auth-brand"><span class="brand-icon">M</span> Makumba Languages</div>
+            <h1 id="authTitle">Bienvenido de nuevo</h1>
+            <p id="authDescription">Ingresa a tu cuenta para continuar aprendiendo.</p>
+
+            <form id="authForm">
+                <div id="nameGroup" class="form-group hidden">
+                    <label>Nombre completo</label>
+                    <input id="authName" type="text" placeholder="Tu nombre">
                 </div>
-            </article>
-            <article class="stat-card">
-                <span class="stat-icon">🏆</span>
-                <div>
-                    <p>Mejor puntuación</p>
-                    <h2 id="mejorPuntuacion">0%</h2>
+                <div class="form-group">
+                    <label>Correo electrónico</label>
+                    <input id="authEmail" type="email" placeholder="ejemplo@correo.com" required>
                 </div>
-            </article>
-            <article class="stat-card">
-                <span class="stat-icon">⭐</span>
-                <div>
-                    <p>Palabras acertadas</p>
-                    <h2 id="palabrasCorrectas">0</h2>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input id="authPassword" type="password" placeholder="Mínimo 6 caracteres" required minlength="6">
                 </div>
-            </article>
-        </section>
+                <button id="authSubmit" class="btn-primary btn-full" type="submit">Iniciar sesión</button>
+            </form>
 
-        <section class="section-heading" id="practica">
-            <div>
-                <span class="eyebrow">APRENDE PRACTICANDO</span>
-                <h2>Entrenador de pronunciación</h2>
-                <p>Escucha la frase y repítela usando tu micrófono.</p>
+            <p class="auth-switch" id="authSwitch">¿No tienes cuenta? <a href="#" onclick="showAuth('register');return false;">Regístrate</a></p>
+            <p id="authMessage" class="auth-message"></p>
+        </div>
+    </section>
+
+    <!-- APLICACIÓN -->
+    <section id="appPage" class="app-page hidden">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand"><span class="brand-icon">M</span><span>Makumba</span></div>
+
+            <div class="sidebar-label">MENÚ PRINCIPAL</div>
+            <button class="nav-item active" data-page="inicio"><span>⌂</span> Inicio</button>
+            <button class="nav-item" data-page="practica"><span>🎤</span> Pronunciación</button>
+            <button class="nav-item" data-page="academia"><span>📚</span> Academia</button>
+            <button class="nav-item" data-page="frases"><span>💬</span> Frases</button>
+            <button class="nav-item" data-page="juegos"><span>🎮</span> Juegos</button>
+            <button class="nav-item" data-page="gramatica"><span>📝</span> Gramática</button>
+            <button class="nav-item" data-page="traductor"><span>🌎</span> Traductor</button>
+            <button class="nav-item" data-page="progreso"><span>📊</span> Mi progreso</button>
+
+            <div class="sidebar-bottom">
+                <div class="sidebar-user"><div class="avatar" id="sidebarAvatar">U</div><div><strong id="sidebarName">Usuario</strong><small>Estudiante</small></div></div>
+                <button class="logout-button" onclick="logout()">↪ Cerrar sesión</button>
             </div>
-        </section>
+        </aside>
 
-        <section class="practice-card">
-            <div class="practice-top">
-                <div>
-                    <span class="small-label">IDIOMA DE PRÁCTICA</span>
-                    <select id="idioma">
-                        <option value="en-US">🇺🇸 Inglés</option>
-                        <option value="es-ES">🇪🇸 Español</option>
-                        <option value="fr-FR">🇫🇷 Francés</option>
-                        <option value="pt-BR">🇧🇷 Portugués</option>
-                    </select>
-                </div>
-                <span class="exercise-number" id="numeroEjercicio">EJERCICIO 01</span>
-            </div>
+        <main class="main-content">
+            <header class="topbar">
+                <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+                <div><span class="topbar-label">MAKUMBA LANGUAGES</span><h2 id="pageTitle">Inicio</h2></div>
+                <div class="topbar-right"><span class="online-dot"></span><span>Aprendiendo</span><div class="avatar" id="topAvatar">U</div></div>
+            </header>
 
-            <div class="phrase-box">
-                <span class="small-label">REPITE ESTA FRASE</span>
-                <h2 id="fraseObjetivo">Hello, how are you?</h2>
-                <p id="traduccion">Hola, ¿cómo estás?</p>
-                <button id="escuchar" class="button secondary">🔊 Escuchar pronunciación</button>
-            </div>
+            <div class="page-container">
 
-            <div class="microphone-area">
-                <button id="grabar" class="microphone-button" aria-label="Grabar voz">
-                    🎙️
-                </button>
-                <h3>Tu turno de hablar</h3>
-                <p id="estadoMicrofono">Esperando tu voz...</p>
-                <span class="microphone-hint">Pulsa el micrófono y repite la frase.</span>
-            </div>
-
-            <div id="resultado" class="result-box">
-                <div class="result-score">
-                    <span>Tu puntuación</span>
-                    <strong id="puntuacion">0%</strong>
-                </div>
-                <h3 id="mensajeResultado"></h3>
-                <div class="comparison">
-                    <div>
-                        <span>Frase correcta</span>
-                        <p id="textoEsperado"></p>
+                <!-- INICIO -->
+                <section class="content-page active" id="page-inicio">
+                    <div class="welcome-banner">
+                        <div><span class="eyebrow">TU ESPACIO DE APRENDIZAJE</span><h1>¡Hola, <span id="welcomeName">aprendiz</span>! 👋</h1><p>Hoy es un buen día para aprender algo nuevo.</p><button class="btn-primary" onclick="navigate('practica')">Comenzar a practicar →</button></div>
+                        <div class="welcome-emoji">🌍</div>
                     </div>
-                    <div>
-                        <span>Lo que dijiste</span>
-                        <p id="textoReconocido"></p>
+                    <div class="section-heading"><div><h2>Tu aprendizaje</h2><p>Continúa mejorando cada día.</p></div></div>
+                    <div class="stats-grid">
+                        <div class="stat-card"><span>🔥</span><small>Racha de días</small><strong id="streakValue">1</strong></div>
+                        <div class="stat-card"><span>⭐</span><small>Experiencia XP</small><strong id="xpValue">0</strong></div>
+                        <div class="stat-card"><span>📖</span><small>Lecciones</small><strong id="lessonsValue">0</strong></div>
+                        <div class="stat-card"><span>🎯</span><small>Precisión</small><strong id="accuracyValue">0%</strong></div>
                     </div>
-                </div>
-            </div>
-
-            <div class="practice-footer">
-                <p id="consejoMakumba">Escucha la frase y presta atención a cómo se pronuncia.</p>
-                <button id="nuevoEjercicio" class="button primary">Nuevo ejercicio →</button>
-            </div>
-        </section>
-
-        <section class="section-heading" id="traductor">
-            <div>
-                <span class="eyebrow">TRADUCE Y ESCUCHA</span>
-                <h2>Traductor de idiomas</h2>
-                <p>Escribe cualquier texto, tradúcelo y escucha cómo se pronuncia.</p>
-            </div>
-        </section>
-
-        <section class="translator-card">
-            <div class="translator-controls">
-                <div>
-                    <label for="idiomaOrigen">Traducir desde</label>
-                    <select id="idiomaOrigen">
-                        <option value="es">Español</option>
-                        <option value="en">Inglés</option>
-                        <option value="fr">Francés</option>
-                        <option value="pt">Portugués</option>
-                    </select>
-                </div>
-                <span class="translate-arrow">→</span>
-                <div>
-                    <label for="idiomaDestino">Traducir a</label>
-                    <select id="idiomaDestino">
-                        <option value="en">Inglés</option>
-                        <option value="es">Español</option>
-                        <option value="fr">Francés</option>
-                        <option value="pt">Portugués</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="translator-columns">
-                <div class="translation-panel">
-                    <label for="textoOriginal">Tu texto</label>
-                    <textarea id="textoOriginal" placeholder="Escribe aquí lo que quieres traducir..."></textarea>
-                    <span class="character-count" id="contadorTexto">0 / 500</span>
-                </div>
-
-                <div class="translation-panel translated-panel">
-                    <label for="textoTraducido">Traducción</label>
-                    <div id="textoTraducido" class="translation-output">Tu traducción aparecerá aquí...</div>
-                    <span class="character-count" id="estadoTraduccion">Esperando texto</span>
-                </div>
-            </div>
-
-            <div class="translator-actions">
-                <button id="traducirTexto" class="button primary">🌐 Traducir texto</button>
-                <button id="escucharTraduccion" class="button secondary" disabled>🔊 Escuchar traducción</button>
-                <button id="copiarTraduccion" class="button secondary" disabled>📋 Copiar</button>
-            </div>
-            <p class="translator-note">La traducción necesita conexión a internet. La pronunciación utiliza las voces disponibles en tu navegador.</p>
-        </section>
-
-        <section class="section-heading" id="makumba">
-            <div>
-                <span class="eyebrow">TU COMPAÑERO DE APRENDIZAJE</span>
-                <h2>Habla con Makumba</h2>
-                <p>Escribe una frase y Makumba la dirá en voz alta.</p>
-            </div>
-        </section>
-
-        <section class="makumba-card">
-            <div class="character-area">
-                <div class="speech-bubble" id="burbuja">
-                    ¡Hola! Soy Makumba. Pulsa escuchar o habla conmigo.
-                </div>
-                <div class="character" id="personaje">
-                    <div class="character-antenna"></div>
-                    <div class="character-head">
-                        <div class="character-eyes"><i></i><i></i></div>
-                        <div class="character-mouth"></div>
+                    <div class="section-heading"><div><h2>Explora Makumba</h2><p>Selecciona una herramienta para continuar.</p></div></div>
+                    <div class="tools-grid">
+                        <article class="tool-card" onclick="navigate('practica')"><span>🎤</span><h3>Pronunciación</h3><p>Entrena tu voz y escucha tu progreso.</p><a>Entrar →</a></article>
+                        <article class="tool-card" onclick="navigate('academia')"><span>🎓</span><h3>Academia</h3><p>Avanza por los niveles de aprendizaje.</p><a>Entrar →</a></article>
+                        <article class="tool-card" onclick="navigate('juegos')"><span>🎮</span><h3>Juegos</h3><p>Practica con actividades divertidas.</p><a>Entrar →</a></article>
+                        <article class="tool-card" onclick="navigate('traductor')"><span>🌎</span><h3>Traductor</h3><p>Traduce palabras y expresiones.</p><a>Entrar →</a></article>
                     </div>
-                    <div class="character-body">
-                        <span>M</span>
+                </section>
+
+                <!-- PRONUNCIACIÓN -->
+                <section class="content-page" id="page-practica">
+                    <div class="page-intro"><span class="eyebrow">ENTRENAMIENTO DE VOZ</span><h1>Practica tu pronunciación 🎤</h1><p>Escucha, repite y compara tu pronunciación.</p></div>
+                    <div class="learning-card">
+                        <div class="form-group"><label>Idioma</label><select id="practiceLanguage"><option value="en-US">Inglés</option><option value="es-ES">Español</option><option value="fr-FR">Francés</option><option value="pt-BR">Portugués</option></select></div>
+                        <div class="practice-word"><span>FRASE PARA PRACTICAR</span><h2 id="practiceText">Hello, how are you?</h2><button class="btn-secondary" id="speakPractice">🔊 Escuchar pronunciación</button></div>
+                        <div class="practice-actions"><button class="btn-primary" id="startRecording">🎙️ Hablar ahora</button><button class="btn-secondary" id="nextPractice">Siguiente frase →</button></div>
+                        <p id="recordingStatus" class="status-text">Presiona el botón para comenzar a hablar.</p>
+                        <div id="practiceResult" class="result-panel hidden"></div>
                     </div>
-                    <div class="character-arm left"></div>
-                    <div class="character-arm right"></div>
-                </div>
+                </section>
+
+                <!-- ACADEMIA -->
+                <section class="content-page" id="page-academia">
+                    <div class="page-intro"><span class="eyebrow">TU CAMINO DE APRENDIZAJE</span><h1>Academia 📚</h1><p>Selecciona tu nivel y comienza una lección.</p></div>
+                    <div class="level-grid">
+                        <button class="level-card selected" data-level="A1"><strong>A1</strong><span>Principiante</span></button>
+                        <button class="level-card" data-level="A2"><strong>A2</strong><span>Elemental</span></button>
+                        <button class="level-card" data-level="B1"><strong>B1</strong><span>Intermedio</span></button>
+                        <button class="level-card" data-level="B2"><strong>B2</strong><span>Intermedio alto</span></button>
+                        <button class="level-card" data-level="C1"><strong>C1</strong><span>Avanzado</span></button>
+                        <button class="level-card" data-level="C2"><strong>C2</strong><span>Maestría</span></button>
+                    </div>
+                    <div class="learning-card"><h2 id="lessonTitle">Nivel A1 · Saludos básicos</h2><p id="lessonDescription">Aprende a saludar y presentarte en inglés.</p><div class="lesson-example"><strong>Hello</strong><span>Hola</span><button class="icon-button" onclick="speakText('Hello','en-US')">🔊</button></div><div class="lesson-example"><strong>Good morning</strong><span>Buenos días</span><button class="icon-button" onclick="speakText('Good morning','en-US')">🔊</button></div><div class="lesson-example"><strong>How are you?</strong><span>¿Cómo estás?</span><button class="icon-button" onclick="speakText('How are you?','en-US')">🔊</button></div><button class="btn-primary" id="completeLesson">Completar lección ✓</button></div>
+                </section>
+
+                <!-- FRASES -->
+                <section class="content-page" id="page-frases">
+                    <div class="page-intro"><span class="eyebrow">EXPRESIONES ÚTILES</span><h1>Biblioteca de frases 💬</h1><p>Descubre expresiones para situaciones cotidianas.</p></div>
+                    <div class="learning-card"><div class="form-group"><label>Buscar una frase</label><input id="phraseSearch" placeholder="Escribe una palabra..."></div><div class="form-group"><label>Idioma</label><select id="phraseLanguage"><option value="en-US">Inglés</option><option value="fr-FR">Francés</option><option value="pt-BR">Portugués</option></select></div><div id="phraseList" class="phrase-list"></div></div>
+                </section>
+
+                <!-- JUEGOS -->
+                <section class="content-page" id="page-juegos">
+                    <div class="page-intro"><span class="eyebrow">APRENDER JUGANDO</span><h1>Zona de juegos 🎮</h1><p>Comprueba lo que has aprendido.</p></div>
+                    <div class="learning-card game-card"><span class="game-icon">🧠</span><h2>¿Qué significa esta palabra?</h2><div id="gameWord" class="game-word">Apple</div><div id="gameOptions" class="game-options"></div><p id="gameFeedback" class="status-text"></p><button class="btn-secondary" id="nextGame">Nueva pregunta</button></div>
+                </section>
+
+                <!-- GRAMÁTICA -->
+                <section class="content-page" id="page-gramatica">
+                    <div class="page-intro"><span class="eyebrow">CONSTRUYE TU CONOCIMIENTO</span><h1>Gramática 📝</h1><p>Aprende estructuras y reglas del idioma.</p></div>
+                    <div class="tools-grid">
+                        <article class="tool-card"><span>🔤</span><h3>Verbo To Be</h3><p>I am, You are, He is. Se utiliza para hablar de estados e identidades.</p><button class="btn-secondary" onclick="speakText('I am a student','en-US')">Escuchar ejemplo 🔊</button></article>
+                        <article class="tool-card"><span>⏰</span><h3>Presente simple</h3><p>Se utiliza para rutinas y hechos habituales.</p><button class="btn-secondary" onclick="speakText('I study every day','en-US')">Escuchar ejemplo 🔊</button></article>
+                        <article class="tool-card"><span>📅</span><h3>Pasado simple</h3><p>Se utiliza para hablar de acciones terminadas en el pasado.</p><button class="btn-secondary" onclick="speakText('I visited my family yesterday','en-US')">Escuchar ejemplo 🔊</button></article>
+                    </div>
+                </section>
+
+                <!-- TRADUCTOR -->
+                <section class="content-page" id="page-traductor">
+                    <div class="page-intro"><span class="eyebrow">COMUNICACIÓN SIN FRONTERAS</span><h1>Traductor 🌎</h1><p>Traduce expresiones entre diferentes idiomas.</p></div>
+                    <div class="learning-card">
+                        <div class="form-group"><label>Texto</label><textarea id="translateInput" rows="4" placeholder="Escribe lo que deseas traducir..."></textarea></div>
+                        <div class="form-group"><label>Traducir a</label><select id="translateLanguage"><option value="en">Inglés</option><option value="es">Español</option><option value="fr">Francés</option><option value="pt">Portugués</option></select></div>
+                        <button class="btn-primary" id="translateButton">Traducir →</button>
+                        <div id="translationResult" class="translation-result">Tu traducción aparecerá aquí.</div>
+                    </div>
+                </section>
+
+                <!-- PROGRESO -->
+                <section class="content-page" id="page-progreso">
+                    <div class="page-intro"><span class="eyebrow">CADA PASO CUENTA</span><h1>Mi progreso 📊</h1><p>Observa cuánto has avanzado.</p></div>
+                    <div class="stats-grid">
+                        <div class="stat-card"><span>⭐</span><small>Experiencia</small><strong id="progressXP">0 XP</strong></div>
+                        <div class="stat-card"><span>📚</span><small>Lecciones terminadas</small><strong id="progressLessons">0</strong></div>
+                        <div class="stat-card"><span>🎤</span><small>Prácticas realizadas</small><strong id="progressPractices">0</strong></div>
+                    </div>
+                    <div class="learning-card"><h2>Tu avance</h2><div class="progress-track"><div id="progressBar" class="progress-fill"></div></div><p id="progressText">¡Comienza a aprender para registrar tu progreso!</p></div>
+                </section>
+
             </div>
+        </main>
+    </section>
 
-            <div class="makumba-chat">
-                <label for="instruccion">Escribe algo para que Makumba lo pronuncie</label>
-                <div class="chat-input-row">
-                    <input id="instruccion" type="text" placeholder="Escribe una frase...">
-                    <button id="ejecutar" class="button primary">Decir texto</button>
-                </div>
-                <p id="estado">Makumba está preparado.</p>
+    <!-- ROBOT FLOTANTE ARRASTRABLE -->
+    <div id="makumbaRobot" class="floating-robot" title="Arrástrame para moverme">
+        <div class="robot-speech" id="robotSpeech">¡Hola! Soy Makumba 🤖</div>
+        <div class="robot-character">
+            <div class="robot-antenna"></div>
+            <div class="robot-head">
+                <div class="robot-ear left"></div>
+                <div class="robot-ear right"></div>
+                <div class="robot-eyes"><i></i><i></i></div>
+                <div class="robot-mouth"></div>
             </div>
-        </section>
+            <div class="robot-body"><span>M</span></div>
+            <div class="robot-arm left"></div>
+            <div class="robot-arm right"></div>
+        </div>
+        <button id="robotChatButton" class="robot-chat-button" title="Hablar con Makumba">✦</button>
+    </div>
 
-        <footer>
-            <p>© 2026 Makumba Languages · Aprende un idioma cada día.</p>
-        </footer>
-    </main>
-</div>
-
-<script src="java.js"></script>
+    <div id="toast" class="toast"></div>
+    <script src="java.js"></script>
 </body>
 </html>
