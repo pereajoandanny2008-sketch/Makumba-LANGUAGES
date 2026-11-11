@@ -2,230 +2,208 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Makumba Languages</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101a30">
+  <meta name="description" content="Makumba Languages: aprende idiomas practicando y avanzando a tu ritmo.">
+  <title>Makumba Languages</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- PORTADA -->
-    <section id="landingPage" class="landing-page">
-        <nav class="landing-nav">
-            <div class="brand"><span class="brand-icon">M</span> Makumba Languages</div>
-            <button class="btn-primary" onclick="showAuth('login')">Ingresar</button>
-        </nav>
-
-        <div class="hero">
-            <div class="hero-content">
-                <span class="eyebrow">APRENDE IDIOMAS A TU RITMO</span>
-                <h1>Habla un nuevo idioma.<br><span>Abre un mundo nuevo.</span></h1>
-                <p>Practica, aprende y mejora tu pronunciación con herramientas interactivas y la ayuda de Makumba.</p>
-                <button class="btn-primary btn-large" onclick="showAuth('register')">Comenzar ahora →</button>
-                <div class="hero-stats">
-                    <div><strong>6</strong><small>Niveles de aprendizaje</small></div>
-                    <div><strong>4</strong><small>Idiomas disponibles</small></div>
-                    <div><strong>∞</strong><small>Oportunidades</small></div>
-                </div>
-            </div>
-            <div class="hero-art">
-                <div class="hero-glow"></div>
-                <div class="hero-card">
-                    <div class="hero-robot">🤖</div>
-                    <h3>¡Hola, aprendiz!</h3>
-                    <p>¿Listo para aprender algo nuevo?</p>
-                    <span class="robot-status">● Makumba está en línea</span>
-                </div>
-                <div class="floating-bubble bubble-one">Hello! 👋</div>
-                <div class="floating-bubble bubble-two">Bonjour!</div>
-                <div class="floating-bubble bubble-three">¡Vamos!</div>
-            </div>
-        </div>
-
-        <div class="landing-features">
-            <article class="feature-card"><span>🎤</span><h3>Pronunciación</h3><p>Practica tu voz y mejora tu pronunciación.</p></article>
-            <article class="feature-card"><span>📚</span><h3>Academia</h3><p>Aprende paso a paso con diferentes niveles.</p></article>
-            <article class="feature-card"><span>🎮</span><h3>Juegos</h3><p>Aprende mientras te diviertes.</p></article>
-        </div>
-    </section>
-
-    <!-- AUTENTICACIÓN -->
-    <section id="authPage" class="auth-page hidden">
-        <div class="auth-decoration"></div>
-        <div class="auth-card">
-            <button class="back-button" onclick="showLanding()">← Volver</button>
-            <div class="brand auth-brand"><span class="brand-icon">M</span> Makumba Languages</div>
-            <h1 id="authTitle">Bienvenido de nuevo</h1>
-            <p id="authDescription">Ingresa a tu cuenta para continuar aprendiendo.</p>
-
-            <form id="authForm">
-                <div id="nameGroup" class="form-group hidden">
-                    <label>Nombre completo</label>
-                    <input id="authName" type="text" placeholder="Tu nombre">
-                </div>
-                <div class="form-group">
-                    <label>Correo electrónico</label>
-                    <input id="authEmail" type="email" placeholder="ejemplo@correo.com" required>
-                </div>
-                <div class="form-group">
-                    <label>Contraseña</label>
-                    <input id="authPassword" type="password" placeholder="Mínimo 6 caracteres" required minlength="6">
-                </div>
-                <button id="authSubmit" class="btn-primary btn-full" type="submit">Iniciar sesión</button>
-            </form>
-
-            <p class="auth-switch" id="authSwitch">¿No tienes cuenta? <a href="#" onclick="showAuth('register');return false;">Regístrate</a></p>
-            <p id="authMessage" class="auth-message"></p>
-        </div>
-    </section>
-
-    <!-- APLICACIÓN -->
-    <section id="appPage" class="app-page hidden">
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-brand"><span class="brand-icon">M</span><span>Makumba</span></div>
-
-            <div class="sidebar-label">MENÚ PRINCIPAL</div>
-            <button class="nav-item active" data-page="inicio"><span>⌂</span> Inicio</button>
-            <button class="nav-item" data-page="practica"><span>🎤</span> Pronunciación</button>
-            <button class="nav-item" data-page="academia"><span>📚</span> Academia</button>
-            <button class="nav-item" data-page="frases"><span>💬</span> Frases</button>
-            <button class="nav-item" data-page="juegos"><span>🎮</span> Juegos</button>
-            <button class="nav-item" data-page="gramatica"><span>📝</span> Gramática</button>
-            <button class="nav-item" data-page="traductor"><span>🌎</span> Traductor</button>
-            <button class="nav-item" data-page="progreso"><span>📊</span> Mi progreso</button>
-
-            <div class="sidebar-bottom">
-                <div class="sidebar-user"><div class="avatar" id="sidebarAvatar">U</div><div><strong id="sidebarName">Usuario</strong><small>Estudiante</small></div></div>
-                <button class="logout-button" onclick="logout()">↪ Cerrar sesión</button>
-            </div>
-        </aside>
-
-        <main class="main-content">
-            <header class="topbar">
-                <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
-                <div><span class="topbar-label">MAKUMBA LANGUAGES</span><h2 id="pageTitle">Inicio</h2></div>
-                <div class="topbar-right"><span class="online-dot"></span><span>Aprendiendo</span><div class="avatar" id="topAvatar">U</div></div>
-            </header>
-
-            <div class="page-container">
-
-                <!-- INICIO -->
-                <section class="content-page active" id="page-inicio">
-                    <div class="welcome-banner">
-                        <div><span class="eyebrow">TU ESPACIO DE APRENDIZAJE</span><h1>¡Hola, <span id="welcomeName">aprendiz</span>! 👋</h1><p>Hoy es un buen día para aprender algo nuevo.</p><button class="btn-primary" onclick="navigate('practica')">Comenzar a practicar →</button></div>
-                        <div class="welcome-emoji">🌍</div>
-                    </div>
-                    <div class="section-heading"><div><h2>Tu aprendizaje</h2><p>Continúa mejorando cada día.</p></div></div>
-                    <div class="stats-grid">
-                        <div class="stat-card"><span>🔥</span><small>Racha de días</small><strong id="streakValue">1</strong></div>
-                        <div class="stat-card"><span>⭐</span><small>Experiencia XP</small><strong id="xpValue">0</strong></div>
-                        <div class="stat-card"><span>📖</span><small>Lecciones</small><strong id="lessonsValue">0</strong></div>
-                        <div class="stat-card"><span>🎯</span><small>Precisión</small><strong id="accuracyValue">0%</strong></div>
-                    </div>
-                    <div class="section-heading"><div><h2>Explora Makumba</h2><p>Selecciona una herramienta para continuar.</p></div></div>
-                    <div class="tools-grid">
-                        <article class="tool-card" onclick="navigate('practica')"><span>🎤</span><h3>Pronunciación</h3><p>Entrena tu voz y escucha tu progreso.</p><a>Entrar →</a></article>
-                        <article class="tool-card" onclick="navigate('academia')"><span>🎓</span><h3>Academia</h3><p>Avanza por los niveles de aprendizaje.</p><a>Entrar →</a></article>
-                        <article class="tool-card" onclick="navigate('juegos')"><span>🎮</span><h3>Juegos</h3><p>Practica con actividades divertidas.</p><a>Entrar →</a></article>
-                        <article class="tool-card" onclick="navigate('traductor')"><span>🌎</span><h3>Traductor</h3><p>Traduce palabras y expresiones.</p><a>Entrar →</a></article>
-                    </div>
-                </section>
-
-                <!-- PRONUNCIACIÓN -->
-                <section class="content-page" id="page-practica">
-                    <div class="page-intro"><span class="eyebrow">ENTRENAMIENTO DE VOZ</span><h1>Practica tu pronunciación 🎤</h1><p>Escucha, repite y compara tu pronunciación.</p></div>
-                    <div class="learning-card">
-                        <div class="form-group"><label>Idioma</label><select id="practiceLanguage"><option value="en-US">Inglés</option><option value="es-ES">Español</option><option value="fr-FR">Francés</option><option value="pt-BR">Portugués</option></select></div>
-                        <div class="practice-word"><span>FRASE PARA PRACTICAR</span><h2 id="practiceText">Hello, how are you?</h2><button class="btn-secondary" id="speakPractice">🔊 Escuchar pronunciación</button></div>
-                        <div class="practice-actions"><button class="btn-primary" id="startRecording">🎙️ Hablar ahora</button><button class="btn-secondary" id="nextPractice">Siguiente frase →</button></div>
-                        <p id="recordingStatus" class="status-text">Presiona el botón para comenzar a hablar.</p>
-                        <div id="practiceResult" class="result-panel hidden"></div>
-                    </div>
-                </section>
-
-                <!-- ACADEMIA -->
-                <section class="content-page" id="page-academia">
-                    <div class="page-intro"><span class="eyebrow">TU CAMINO DE APRENDIZAJE</span><h1>Academia 📚</h1><p>Selecciona tu nivel y comienza una lección.</p></div>
-                    <div class="level-grid">
-                        <button class="level-card selected" data-level="A1"><strong>A1</strong><span>Principiante</span></button>
-                        <button class="level-card" data-level="A2"><strong>A2</strong><span>Elemental</span></button>
-                        <button class="level-card" data-level="B1"><strong>B1</strong><span>Intermedio</span></button>
-                        <button class="level-card" data-level="B2"><strong>B2</strong><span>Intermedio alto</span></button>
-                        <button class="level-card" data-level="C1"><strong>C1</strong><span>Avanzado</span></button>
-                        <button class="level-card" data-level="C2"><strong>C2</strong><span>Maestría</span></button>
-                    </div>
-                    <div class="learning-card"><h2 id="lessonTitle">Nivel A1 · Saludos básicos</h2><p id="lessonDescription">Aprende a saludar y presentarte en inglés.</p><div class="lesson-example"><strong>Hello</strong><span>Hola</span><button class="icon-button" onclick="speakText('Hello','en-US')">🔊</button></div><div class="lesson-example"><strong>Good morning</strong><span>Buenos días</span><button class="icon-button" onclick="speakText('Good morning','en-US')">🔊</button></div><div class="lesson-example"><strong>How are you?</strong><span>¿Cómo estás?</span><button class="icon-button" onclick="speakText('How are you?','en-US')">🔊</button></div><button class="btn-primary" id="completeLesson">Completar lección ✓</button></div>
-                </section>
-
-                <!-- FRASES -->
-                <section class="content-page" id="page-frases">
-                    <div class="page-intro"><span class="eyebrow">EXPRESIONES ÚTILES</span><h1>Biblioteca de frases 💬</h1><p>Descubre expresiones para situaciones cotidianas.</p></div>
-                    <div class="learning-card"><div class="form-group"><label>Buscar una frase</label><input id="phraseSearch" placeholder="Escribe una palabra..."></div><div class="form-group"><label>Idioma</label><select id="phraseLanguage"><option value="en-US">Inglés</option><option value="fr-FR">Francés</option><option value="pt-BR">Portugués</option></select></div><div id="phraseList" class="phrase-list"></div></div>
-                </section>
-
-                <!-- JUEGOS -->
-                <section class="content-page" id="page-juegos">
-                    <div class="page-intro"><span class="eyebrow">APRENDER JUGANDO</span><h1>Zona de juegos 🎮</h1><p>Comprueba lo que has aprendido.</p></div>
-                    <div class="learning-card game-card"><span class="game-icon">🧠</span><h2>¿Qué significa esta palabra?</h2><div id="gameWord" class="game-word">Apple</div><div id="gameOptions" class="game-options"></div><p id="gameFeedback" class="status-text"></p><button class="btn-secondary" id="nextGame">Nueva pregunta</button></div>
-                </section>
-
-                <!-- GRAMÁTICA -->
-                <section class="content-page" id="page-gramatica">
-                    <div class="page-intro"><span class="eyebrow">CONSTRUYE TU CONOCIMIENTO</span><h1>Gramática 📝</h1><p>Aprende estructuras y reglas del idioma.</p></div>
-                    <div class="tools-grid">
-                        <article class="tool-card"><span>🔤</span><h3>Verbo To Be</h3><p>I am, You are, He is. Se utiliza para hablar de estados e identidades.</p><button class="btn-secondary" onclick="speakText('I am a student','en-US')">Escuchar ejemplo 🔊</button></article>
-                        <article class="tool-card"><span>⏰</span><h3>Presente simple</h3><p>Se utiliza para rutinas y hechos habituales.</p><button class="btn-secondary" onclick="speakText('I study every day','en-US')">Escuchar ejemplo 🔊</button></article>
-                        <article class="tool-card"><span>📅</span><h3>Pasado simple</h3><p>Se utiliza para hablar de acciones terminadas en el pasado.</p><button class="btn-secondary" onclick="speakText('I visited my family yesterday','en-US')">Escuchar ejemplo 🔊</button></article>
-                    </div>
-                </section>
-
-                <!-- TRADUCTOR -->
-                <section class="content-page" id="page-traductor">
-                    <div class="page-intro"><span class="eyebrow">COMUNICACIÓN SIN FRONTERAS</span><h1>Traductor 🌎</h1><p>Traduce expresiones entre diferentes idiomas.</p></div>
-                    <div class="learning-card">
-                        <div class="form-group"><label>Texto</label><textarea id="translateInput" rows="4" placeholder="Escribe lo que deseas traducir..."></textarea></div>
-                        <div class="form-group"><label>Traducir a</label><select id="translateLanguage"><option value="en">Inglés</option><option value="es">Español</option><option value="fr">Francés</option><option value="pt">Portugués</option></select></div>
-                        <button class="btn-primary" id="translateButton">Traducir →</button>
-                        <div id="translationResult" class="translation-result">Tu traducción aparecerá aquí.</div>
-                    </div>
-                </section>
-
-                <!-- PROGRESO -->
-                <section class="content-page" id="page-progreso">
-                    <div class="page-intro"><span class="eyebrow">CADA PASO CUENTA</span><h1>Mi progreso 📊</h1><p>Observa cuánto has avanzado.</p></div>
-                    <div class="stats-grid">
-                        <div class="stat-card"><span>⭐</span><small>Experiencia</small><strong id="progressXP">0 XP</strong></div>
-                        <div class="stat-card"><span>📚</span><small>Lecciones terminadas</small><strong id="progressLessons">0</strong></div>
-                        <div class="stat-card"><span>🎤</span><small>Prácticas realizadas</small><strong id="progressPractices">0</strong></div>
-                    </div>
-                    <div class="learning-card"><h2>Tu avance</h2><div class="progress-track"><div id="progressBar" class="progress-fill"></div></div><p id="progressText">¡Comienza a aprender para registrar tu progreso!</p></div>
-                </section>
-
-            </div>
-        </main>
-    </section>
-
-    <!-- ROBOT FLOTANTE ARRASTRABLE -->
-    <div id="makumbaRobot" class="floating-robot" title="Arrástrame para moverme">
-        <div class="robot-speech" id="robotSpeech">¡Hola! Soy Makumba 🤖</div>
-        <div class="robot-character">
-            <div class="robot-antenna"></div>
-            <div class="robot-head">
-                <div class="robot-ear left"></div>
-                <div class="robot-ear right"></div>
-                <div class="robot-eyes"><i></i><i></i></div>
-                <div class="robot-mouth"></div>
-            </div>
-            <div class="robot-body"><span>M</span></div>
-            <div class="robot-arm left"></div>
-            <div class="robot-arm right"></div>
-        </div>
-        <button id="robotChatButton" class="robot-chat-button" title="Hablar con Makumba">✦</button>
+  <!-- PORTADA -->
+  <section id="landingPage" class="landing">
+    <nav class="landing-nav">
+      <div class="brand"><span class="brand-icon">M</span> Makumba <b>Languages</b></div>
+      <button class="btn btn-outline" id="loginLanding">Iniciar sesión</button>
+    </nav>
+    <div class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">APRENDE A TU RITMO</span>
+        <h1>Un nuevo idioma.<br><span>Un mundo de posibilidades.</span></h1>
+        <p>Aprende idiomas con lecciones, juegos, pronunciación y evaluaciones adaptadas a cada tema.</p>
+        <button class="btn btn-primary" id="startLanding">Comenzar gratis <span>→</span></button>
+      </div>
+      <div class="hero-art">
+        <div class="hero-globe">🌎</div>
+        <div class="floating-card">🇫🇷 Bonjour!</div>
+        <div class="floating-card second">🇬🇧 Hello!</div>
+        <div class="floating-card third">🇯🇵 こんにちは</div>
+      </div>
     </div>
+    <div class="landing-features">
+      <div>📚 <b>Lecciones</b><span>Aprende paso a paso</span></div>
+      <div>🎮 <b>Juegos</b><span>Practica divirtiéndote</span></div>
+      <div>🏆 <b>Progreso</b><span>Supera tus niveles</span></div>
+    </div>
+  </section>
 
-    <div id="toast" class="toast"></div>
-    <script src="java.js"></script>
+  <!-- AUTENTICACIÓN -->
+  <section id="authPage" class="auth-page hidden">
+    <div class="auth-card">
+      <div class="brand"><span class="brand-icon">M</span> Makumba <b>Languages</b></div>
+      <h2 id="authTitle">Crear cuenta</h2>
+      <p id="authSubtitle">Comienza tu aventura aprendiendo idiomas.</p>
+      <form id="authForm">
+        <div id="nameGroup" class="field">
+          <label for="authName">Nombre</label>
+          <input id="authName" type="text" placeholder="Tu nombre" autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="authEmail">Correo electrónico</label>
+          <input id="authEmail" type="email" placeholder="correo@ejemplo.com" required autocomplete="email">
+        </div>
+        <div class="field">
+          <label for="authPassword">Contraseña</label>
+          <input id="authPassword" type="password" placeholder="Mínimo 6 caracteres" required minlength="6" autocomplete="current-password">
+        </div>
+        <p id="authMessage" class="message"></p>
+        <button id="authSubmit" class="btn btn-primary full" type="submit">Crear cuenta</button>
+      </form>
+      <p class="auth-switch"><span id="authSwitch">¿Ya tienes una cuenta?</span> <button id="switchAuth" class="text-button">Inicia sesión</button></p>
+      <button id="backLanding" class="text-button back-button">← Volver al inicio</button>
+    </div>
+  </section>
+
+  <!-- APLICACIÓN -->
+  <section id="appPage" class="app-layout hidden">
+    <aside id="sidebar" class="sidebar">
+      <div class="brand sidebar-brand"><span class="brand-icon">M</span> Makumba</div>
+      <div class="profile-mini">
+        <div id="sidebarAvatar" class="avatar">M</div>
+        <div><strong id="sidebarName">Estudiante</strong><small>Mi espacio de aprendizaje</small></div>
+      </div>
+      <div class="side-language">
+        <label for="globalLanguage">IDIOMA DE APRENDIZAJE</label>
+        <select id="globalLanguage">
+          <option value="en">🇬🇧 Inglés</option>
+          <option value="fr">🇫🇷 Francés</option>
+          <option value="pt">🇧🇷 Portugués</option>
+          <option value="it">🇮🇹 Italiano</option>
+          <option value="de">🇩🇪 Alemán</option>
+          <option value="es">🇪🇸 Español</option>
+          <option value="ja">🇯🇵 Japonés</option>
+          <option value="ko">🇰🇷 Coreano</option>
+        </select>
+      </div>
+      <nav class="side-nav">
+        <span class="nav-caption">MENÚ PRINCIPAL</span>
+        <button class="nav-item active" data-page="inicio">🏠 <span>Inicio</span></button>
+        <button class="nav-item" data-page="academia">📚 <span>Academia</span></button>
+        <button class="nav-item" data-page="practica">🎤 <span>Pronunciación</span></button>
+        <button class="nav-item" data-page="frases">💬 <span>Frases</span></button>
+        <button class="nav-item" data-page="juegos">🎮 <span>Juegos</span></button>
+        <button class="nav-item" data-page="gramatica">📝 <span>Gramática</span></button>
+        <button class="nav-item" data-page="traductor">🌐 <span>Traductor</span></button>
+        <button class="nav-item" data-page="progreso">📊 <span>Mi progreso</span></button>
+      </nav>
+      <button id="logoutButton" class="logout-button">↪ Cerrar sesión</button>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button id="mobileMenuButton" class="menu-button" aria-label="Abrir menú">☰</button>
+        <div><span class="top-label">MAKUMBA LANGUAGES</span><h2 id="pageTitle">Inicio</h2></div>
+        <div class="top-user"><span id="topLanguage">🇬🇧 Inglés</span><div id="topAvatar" class="avatar">M</div></div>
+      </header>
+
+      <!-- INICIO -->
+      <section id="page-inicio" class="page active-page">
+        <div class="welcome-banner">
+          <div><span class="eyebrow">TU AVENTURA CONTINÚA</span><h1>¡Hola, <span id="welcomeName">estudiante</span>! 👋</h1><p>Hoy es un buen día para aprender algo nuevo.</p></div>
+          <div class="welcome-emoji">🚀</div>
+        </div>
+        <div class="stats-grid">
+          <article class="stat-card"><span>🔥</span><small>Racha</small><strong id="streakValue">1 día</strong></article>
+          <article class="stat-card"><span>⭐</span><small>Experiencia</small><strong id="xpValue">0 XP</strong></article>
+          <article class="stat-card"><span>📚</span><small>Lecciones</small><strong id="lessonsValue">0</strong></article>
+          <article class="stat-card"><span>🎯</span><small>Precisión</small><strong id="accuracyValue">0%</strong></article>
+        </div>
+        <div class="section-heading"><div><span class="eyebrow">TU APRENDIZAJE</span><h2>Continúa aprendiendo</h2></div><button class="btn btn-outline" data-go="academia">Ver academia →</button></div>
+        <div class="home-grid">
+          <article class="panel next-panel"><span class="panel-icon">📖</span><h3>Tu próxima lección</h3><p id="nextLessonText">Selecciona una lección en la Academia para comenzar.</p><button class="btn btn-primary" data-go="academia">Ir a estudiar</button></article>
+          <article class="panel motivation-panel"><span class="panel-icon">💡</span><h3>Consejo de Makumba</h3><p>Practicar un poco cada día ayuda a recordar mejor lo aprendido. ¡No te rindas!</p></article>
+        </div>
+      </section>
+
+      <!-- ACADEMIA -->
+      <section id="page-academia" class="page">
+        <div class="page-intro"><span class="eyebrow">TU RUTA DE APRENDIZAJE</span><h1>Academia</h1><p>Completa las lecciones, presenta sus evaluaciones y desbloquea nuevos niveles.</p></div>
+        <div id="level-grid" class="level-grid"></div>
+        <article id="lessonPanel" class="panel lesson-panel">
+          <div class="lesson-top"><span class="eyebrow">LECCIÓN SELECCIONADA</span><span id="lessonLevel" class="level-tag">A1</span></div>
+          <h2 id="lessonTitle">Selecciona una lección</h2>
+          <p id="lessonDescription">Elige una lección para ver su contenido.</p>
+          <div id="lessonContent" class="lesson-content"></div>
+          <div class="lesson-actions">
+            <button id="completeLesson" class="btn btn-primary" disabled>Completar lección</button>
+            <button id="startAssessment" class="btn btn-outline" disabled>Evaluar esta lección</button>
+          </div>
+          <div id="assessmentPanel" class="assessment-panel hidden">
+            <div class="assessment-heading"><div><span class="eyebrow">COMPRUEBA LO APRENDIDO</span><h3 id="assessmentTitle">Evaluación de la lección</h3></div><button id="closeAssessment" class="icon-button" aria-label="Cerrar evaluación">✕</button></div>
+            <p class="assessment-hint">Las preguntas corresponden al tema que acabas de estudiar.</p>
+            <div id="assessmentQuestions"></div>
+            <button id="submitAssessment" class="btn btn-primary full">Calificar evaluación</button>
+            <div id="assessmentResult" class="assessment-result" aria-live="polite"></div>
+          </div>
+        </article>
+      </section>
+
+      <!-- PRONUNCIACIÓN -->
+      <section id="page-practica" class="page">
+        <div class="page-intro"><span class="eyebrow">ESCUCHA Y REPITE</span><h1>Pronunciación</h1><p>Escucha las palabras y practica cómo pronunciarlas.</p></div>
+        <article class="panel practice-panel">
+          <span class="panel-icon">🎤</span><h2 id="practiceText">Hello!</h2><p id="practiceTranslation">Hola</p>
+          <div class="practice-actions"><button id="speakPractice" class="btn btn-primary">🔊 Escuchar</button><button id="startRecording" class="btn btn-outline">🎙 Practicar voz</button><button id="nextPractice" class="btn btn-outline">Siguiente →</button></div>
+          <p id="recordingStatus" class="message"></p><p id="practiceResult" class="practice-result"></p>
+        </article>
+      </section>
+
+      <!-- FRASES -->
+      <section id="page-frases" class="page">
+        <div class="page-intro"><span class="eyebrow">EXPRESIONES ÚTILES</span><h1>Frases</h1><p>Descubre expresiones cotidianas con su significado en español.</p></div>
+        <input id="phraseSearch" class="search-input" type="search" placeholder="Buscar una frase...">
+        <div id="phraseList" class="phrase-list"></div>
+      </section>
+
+      <!-- JUEGOS -->
+      <section id="page-juegos" class="page">
+        <div class="page-intro"><span class="eyebrow">APRENDE JUGANDO</span><h1>Juegos</h1><p>Relaciona palabras del idioma que estás aprendiendo con su significado.</p></div>
+        <article class="panel game-panel"><span class="eyebrow">RETO DE VOCABULARIO</span><h2>¿Qué significa esta palabra?</h2><div id="gameWord" class="game-word">Hello</div><div id="gameOptions" class="game-options"></div><p id="gameFeedback" class="message"></p><button id="nextGame" class="btn btn-primary">Siguiente palabra →</button></article>
+      </section>
+
+      <!-- GRAMÁTICA -->
+      <section id="page-gramatica" class="page">
+        <div class="page-intro"><span class="eyebrow">CONSTRUYE TUS BASES</span><h1>Gramática</h1><p>Repasa estructuras fundamentales del idioma seleccionado.</p></div>
+        <div id="grammarGrid" class="grammar-grid"></div>
+      </section>
+
+      <!-- TRADUCTOR -->
+      <section id="page-traductor" class="page">
+        <div class="page-intro"><span class="eyebrow">DESCUBRE NUEVAS PALABRAS</span><h1>Traductor</h1><p>Traduce del español al idioma que estás aprendiendo.</p></div>
+        <article class="panel translator-panel"><label for="translateInput">Texto en español</label><textarea id="translateInput" maxlength="500" placeholder="Escribe aquí lo que quieres traducir..."></textarea><div class="translator-bottom"><span id="translateLanguage">Idioma destino: Inglés</span><button id="translateButton" class="btn btn-primary">Traducir →</button></div><div id="translationResult" class="translation-result">Tu traducción aparecerá aquí.</div><button id="copyTranslation" class="text-button">📋 Copiar traducción</button></article>
+      </section>
+
+      <!-- PROGRESO -->
+      <section id="page-progreso" class="page">
+        <div class="page-intro"><span class="eyebrow">CADA PASO CUENTA</span><h1>Mi progreso</h1><p>Consulta tus avances en el idioma seleccionado.</p></div>
+        <div class="stats-grid">
+          <article class="stat-card"><span>⭐</span><small>Experiencia</small><strong id="progressXP">0 XP</strong></article>
+          <article class="stat-card"><span>📚</span><small>Lecciones aprobadas</small><strong id="progressLessons">0</strong></article>
+          <article class="stat-card"><span>🎤</span><small>Prácticas</small><strong id="progressPractices">0</strong></article>
+          <article class="stat-card"><span>🎯</span><small>Precisión</small><strong id="progressAccuracy">0%</strong></article>
+        </div>
+        <article class="panel progress-panel"><div class="progress-heading"><h3>Avance del idioma</h3><strong id="progressPercent">0%</strong></div><div class="progress-track"><div id="progressBar" class="progress-fill"></div></div><p id="progressText">Completa lecciones para avanzar.</p><div id="unlockedText" class="unlocked-text"></div></article>
+      </section>
+
+      <footer class="app-footer">© 2026 Makumba Languages · Aprende sin límites 🌎</footer>
+    </main>
+  </section>
+
+  <div id="toast" class="toast" role="status"></div>
+  <button id="robotChatButton" class="robot-button" aria-label="Ayuda de Makumba">🤖</button>
+  <div id="robotSpeech" class="robot-speech hidden">¡Hola! Soy Makumba. Estoy aquí para ayudarte.</div>
+
+  <script src="java.js"></script>
 </body>
 </html>
